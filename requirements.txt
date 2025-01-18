@@ -1,3 +1,6 @@
+pip>=24.3.1
+setuptools>=66.0
+wheel>=0.37.1
 alembic==1.14.0
 anyio==4.2.0
 appdirs==1.4.4
