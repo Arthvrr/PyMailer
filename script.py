@@ -59,9 +59,10 @@ subject = "Sujet de l'email"
 body = lire_contenu_fichier("to_send.txt")
 lire_emails('emails.txt')
 
-# Vérifier s'il y a des emails à envoyer
-if recipients:
-    # Appel de la fonction pour envoyer l'email à tous les destinataires
-    envoyer_email(smtp_server, smtp_port, login, password, subject, body, recipients)
-else:
-    print("Aucun email à envoyer, la liste est vide.")
+
+def main():
+    if recipients:
+        # Appel de la fonction pour envoyer l'email à tous les destinataires
+        envoyer_email(smtp_server, smtp_port, login, password, subject, body, recipients)
+    else:
+        print("Aucun email à envoyer, la liste est vide.")

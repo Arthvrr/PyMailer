@@ -7,3 +7,8 @@ gérer une database d'emails des parents d'animés
 Infos : 
 - front-end géré avec GitHub Pages
 - back-end géré avec 
+
+TODO: 
+- ajouter à github pages
+- connecter à un serveur back-end
+- acheter nom de domaine
