@@ -1,20 +1,19 @@
+#MySQL password : Ubuntu120803
+
 from flask import Flask, request, render_template, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 import os
+import pymysql
 
 app = Flask(__name__)
 
 # Configuration de la base de données
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///emails.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('mysql+pymysql://Arthvrr:Ubuntu120803@Arthvrr.mysql.pythonanywhere-services.com/Arthvrr$default','sqlite:///emails.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'your_secret_key'  # Nécessaire pour utiliser flash() avec Flask
 
 # Initialisation de SQLAlchemy
 db = SQLAlchemy(app)
-
-# Initialisation de Flask-Migrate
-migrate = Migrate(app, db)
 
 # Modèle de la base de données
 class Email(db.Model):

@@ -6,10 +6,12 @@ from flask_sqlalchemy import SQLAlchemy
 import argparse
 import os
 from dotenv import load_dotenv
+import pymysql
 
 # Initialisation de Flask et SQLAlchemy
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///emails.db'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('mysql+pymysql://Arthvrr:Ubuntu120803@Arthvrr.mysql.pythonanywhere-services.com/Arthvrr$default','sqlite:///emails.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
