@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -6,6 +6,7 @@ app = Flask(__name__)
 # Configuration de la base de données
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///emails.db'  # Utilise SQLite pour une base de données simple
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = 'your_secret_key'  # Nécessaire pour utiliser flash() avec Flask
 
 # Initialisation de SQLAlchemy
 db = SQLAlchemy(app)
@@ -28,20 +29,16 @@ def index():
 def add_email():
     email_address = request.form['email']
     if Email.query.filter_by(address=email_address).first():
-        return jsonify({"message": "Cet email existe déjà."}), 400  # Vérifier si l'email existe déjà dans la DB
+        flash("Cet email existe déjà.", "error")  # Message d'erreur
+        return redirect(url_for('index'))  # Rediriger vers la même page
     
     # Ajouter l'email dans la base de données
     new_email = Email(address=email_address)
     db.session.add(new_email)
     db.session.commit()
 
-    return jsonify({"message": "Email ajouté avec succès"}), 200
-
-# Route pour afficher tous les emails (facultatif)
-@app.route('/emails', methods=['GET'])
-def get_emails():
-    emails = Email.query.all()
-    return jsonify([email.address for email in emails])
+    flash("Email ajouté avec succès", "success")  # Message de succès
+    return redirect(url_for('index'))  # Rediriger vers la même page
 
 # Route pour supprimer un email
 @app.route('/delete_email', methods=['POST'])
@@ -50,12 +47,14 @@ def delete_email():
     email_to_delete = Email.query.filter_by(address=email_address).first()
     
     if not email_to_delete:
-        return jsonify({"message": "Cet email n'existe pas dans le listing."}), 404  # Email non trouvé
+        flash("Cet email n'existe pas dans le listing.", "error")  # Message d'erreur
+        return redirect(url_for('index'))  # Rediriger vers la même page
     
     db.session.delete(email_to_delete)
     db.session.commit()
     
-    return jsonify({"message": "Email supprimé avec succès."}), 200
+    flash("Email supprimé avec succès.", "success")  # Message de succès
+    return redirect(url_for('index'))  # Rediriger vers la même page
 
 if __name__ == '__main__':
     with app.app_context():
