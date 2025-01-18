@@ -25,11 +25,11 @@ Un script Python permet d'envoyer un email à **tous** les utilisateurs enregist
 ## Mode Opératoire
 
 ### Étape 1 : Écrire le contenu du mail
-Écrivez le contenu de votre email dans un fichier texte nommé `to_send.txt`. Ce fichier contiendra le sujet et le corps de votre message.
+Écrivez le contenu de votre email dans un fichier texte nommé `message.txt`. Ce fichier contiendra le sujet et le corps de votre message.
 
 ### Étape 2 : Envoyer l'email à toute la base de données
-Une fois le fichier `to_send.txt` prêt, vous pouvez envoyer l'email à tous les utilisateurs inscrits. Pour cela, ouvrez un terminal et exécutez la commande suivante :
+Une fois le fichier `message.txt` prêt, vous pouvez envoyer l'email à tous les utilisateurs inscrits. Pour cela, ouvrez un terminal et exécutez la commande suivante :
 
 ```bash
-python script.py "Sujet de l'email"
+python script.py "Objet de l'email"
 ```
