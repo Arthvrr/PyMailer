@@ -1,18 +1,26 @@
 from flask import Flask, request, render_template, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+import os
 
 app = Flask(__name__)
 
 # Configuration de la base de données
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///emails.db'  # Utilise SQLite pour une base de données simple
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///emails.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'your_secret_key'  # Nécessaire pour utiliser flash() avec Flask
 
 # Initialisation de SQLAlchemy
 db = SQLAlchemy(app)
 
+# Initialisation de Flask-Migrate
+migrate = Migrate(app, db)
+
 # Modèle de la base de données
 class Email(db.Model):
+
+    __tablename__ = 'email'  # Nom de la table dans la base de données
+
     id = db.Column(db.Integer, primary_key=True)
     address = db.Column(db.String(120), unique=True, nullable=False)
 
