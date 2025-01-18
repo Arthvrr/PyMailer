@@ -1,6 +1,23 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+import argparse
+
+# Initialisation de Flask et SQLAlchemy
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///emails.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# Modèle pour la table Email
+class Email(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    address = db.Column(db.String(120), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'<Email {self.address}>'
 
 # Fonction pour envoyer un email
 def envoyer_email(smtp_server, smtp_port, login, password, subject, body, recipients):
@@ -29,6 +46,17 @@ def envoyer_email(smtp_server, smtp_port, login, password, subject, body, recipi
     except Exception as e:
         print(f"Une erreur est survenue : {e}")
 
+# Fonction pour récupérer les emails de la base de données
+def recuperer_emails():
+    try:
+        # Utiliser le contexte de l'application pour interagir avec la base de données
+        with app.app_context():
+            emails = Email.query.all()  # Récupère tous les emails dans la base de données
+            return [email.address for email in emails]
+    except Exception as e:
+        print(f"Erreur lors de la récupération des emails : {e}")
+        return []
+
 # Lecture du contenu du fichier to_send.txt
 def lire_contenu_fichier(fichier):
     try:
@@ -38,31 +66,31 @@ def lire_contenu_fichier(fichier):
         print(f"Erreur lors de la lecture du fichier {fichier}: {e}")
         return ""
 
-recipients = []
-# Lecture des adresses emails depuis emails.txt et ajout dans la liste recipients
-def lire_emails(fichier):
-    try:
-        with open(fichier, 'r') as file:
-            # Ajoute chaque email dans la liste recipients
-            for email in file.readlines():
-                recipients.append(email.strip())  # Enlever les espaces blancs et les sauts de ligne
-    except Exception as e:
-        print(f"Erreur lors de la lecture des emails depuis {fichier}: {e}")
-
-
 # Paramètres d'envoi
 smtp_server = "smtp.gmail.com"  # Serveur SMTP de Gmail
 smtp_port = 587  # Port SMTP
 login = "arthurlouette12@gmail.com"  # Remplacez par votre adresse email
-password = "ncyg pdoc ijcn ofod"
+password = "ncyg pdoc ijcn ofod"  # Remplacez par votre mot de passe
 subject = "Sujet de l'email"
-body = lire_contenu_fichier("to_send.txt")
-lire_emails('emails.txt')
+body = lire_contenu_fichier("message.txt")
 
+def main(subject):
+    if subject:  # Vérifier si un sujet a été fourni
+        recipients = recuperer_emails()  # Récupère les emails depuis la base de données
 
-def main():
-    if recipients:
-        # Appel de la fonction pour envoyer l'email à tous les destinataires
-        envoyer_email(smtp_server, smtp_port, login, password, subject, body, recipients)
+        if recipients:
+            # Appel de la fonction pour envoyer l'email à tous les destinataires
+            envoyer_email(smtp_server, smtp_port, login, password, subject, body, recipients)
+        else:
+            print("Aucun email à envoyer, la liste est vide.")
     else:
-        print("Aucun email à envoyer, la liste est vide.")
+        print("Erreur : Aucun objet d'email fourni. L'envoi est annulé.")
+
+# Utilisation d'argparse pour récupérer l'objet de l'email depuis la ligne de commande
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Envoyer des emails avec un objet spécifié.")
+    parser.add_argument('subject', type=str, nargs='?', help="L'objet de l'email.")
+    args = parser.parse_args()
+    
+    # Lancer l'envoi des emails si un objet est spécifié, sinon annuler
+    main(args.subject)
