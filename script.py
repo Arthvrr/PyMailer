@@ -4,6 +4,8 @@ from email.mime.multipart import MIMEMultipart
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import argparse
+import os
+from dotenv import load_dotenv
 
 # Initialisation de Flask et SQLAlchemy
 app = Flask(__name__)
@@ -66,11 +68,13 @@ def lire_contenu_fichier(fichier):
         print(f"Erreur lors de la lecture du fichier {fichier}: {e}")
         return ""
 
+load_dotenv()
+
 # Paramètres d'envoi
 smtp_server = "smtp.gmail.com"  # Serveur SMTP de Gmail
 smtp_port = 587  # Port SMTP
 login = "arthurlouette12@gmail.com"  # Remplacez par votre adresse email
-password = "ncyg pdoc ijcn ofod"  # Remplacez par votre mot de passe
+password = os.getenv('SMTP_PASSWORD')
 subject = "Sujet de l'email"
 body = lire_contenu_fichier("message.txt")
 
