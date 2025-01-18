@@ -29,14 +29,39 @@ def envoyer_email(smtp_server, smtp_port, login, password, subject, body, recipi
     except Exception as e:
         print(f"Une erreur est survenue : {e}")
 
+# Lecture du contenu du fichier to_send.txt
+def lire_contenu_fichier(fichier):
+    try:
+        with open(fichier, 'r') as file:
+            return file.read()  # Retourne le contenu du fichier
+    except Exception as e:
+        print(f"Erreur lors de la lecture du fichier {fichier}: {e}")
+        return ""
+
+recipients = []
+# Lecture des adresses emails depuis emails.txt et ajout dans la liste recipients
+def lire_emails(fichier):
+    try:
+        with open(fichier, 'r') as file:
+            # Ajoute chaque email dans la liste recipients
+            for email in file.readlines():
+                recipients.append(email.strip())  # Enlever les espaces blancs et les sauts de ligne
+    except Exception as e:
+        print(f"Erreur lors de la lecture des emails depuis {fichier}: {e}")
+
+
 # Paramètres d'envoi
 smtp_server = "smtp.gmail.com"  # Serveur SMTP de Gmail
 smtp_port = 587  # Port SMTP
 login = "arthurlouette12@gmail.com"  # Remplacez par votre adresse email
 password = "ncyg pdoc ijcn ofod"
 subject = "Sujet de l'email"
-body = "Ceci est un email envoyé automatiquement."
-recipients = ["arthurlouette14@gmail.com"]  # Liste de destinataires
+body = lire_contenu_fichier("to_send.txt")
+lire_emails('emails.txt')
 
-# Appel de la fonction
-envoyer_email(smtp_server, smtp_port, login, password, subject, body, recipients)
+# Vérifier s'il y a des emails à envoyer
+if recipients:
+    # Appel de la fonction pour envoyer l'email à tous les destinataires
+    envoyer_email(smtp_server, smtp_port, login, password, subject, body, recipients)
+else:
+    print("Aucun email à envoyer, la liste est vide.")
