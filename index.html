@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription au listing bala 📬</title>
+    <link rel="icon" href="icon.ico" type="image/x-icon">
+    <style>
+        /* Applique un fond de couleur douce à la page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Centrer verticalement */
+            text-align: center;
+        }
+
+        /* Conteneur du formulaire avec du padding et une bordure arrondie */
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px; /* Augmentation de la largeur du formulaire */
+        }
+
+        /* Style du titre */
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Style du champ input pour l'email */
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        /* Style du bouton */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 10px; /* Espacement entre les deux boutons */
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Style du bouton supprimer */
+        .delete-btn {
+            background-color: #f44336; /* Rouge pour indiquer la suppression */
+        }
+
+        .delete-btn:hover {
+            background-color: #e53935; /* Changement de couleur au survol */
+        }
+
+        /* Ajout de l'espacement entre les éléments */
+        label {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Entrez votre email pour vous inscrire au listing baladins !</h1>
+        <form action="https://formspree.io/f/xxxxxxx" method="POST">
+            <label for="email">Votre Email :</label>
+            <input type="email" id="email" name="email" required>
+            <button type="submit">Envoyer</button>
+        </form>
+        <form action="https://formspree.io/f/xxxxxxx" method="POST">
+            <button class="delete-btn" type="submit">Supprimer mon mail du listing</button>
+        </form>
+    </div>
+</body>
+</html>
