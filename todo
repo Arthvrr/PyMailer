@@ -1,1 +1,6 @@
 - acheter nom de domaine personnalisé
+
+
+pour passer définitivement sur le compte bala :
+1. changer dans script.py l'email de l'envoyeur
+2. créer un compte sur PythonAnywhere avec l'email bala et y copier le code

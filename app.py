@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 from sqlalchemy.exc import OperationalError
 import pymysql
+from sqlalchemy import text
 
 app = Flask(__name__)
 
@@ -30,13 +31,14 @@ class Email(db.Model):
 def test_and_reconnect():
     """Vérifie la connexion à la base de données et rétablit la connexion si nécessaire."""
     try:
-        db.session.execute('SELECT 1')
+        # Utiliser text() pour une requête brute
+        db.session.execute(text('SELECT 1'))
     except OperationalError as e:
         print("Erreur de connexion à la base de données. Tentative de reconnexion...")
         db.session.remove()
         db.engine.dispose()
         try:
-            db.session.execute('SELECT 1')  # Nouvelle tentative de connexion
+            db.session.execute(text('SELECT 1'))  # Nouvelle tentative de connexion
             print("Connexion rétablie.")
         except OperationalError as e2:
             flash("Erreur de connexion à la base de données. Veuillez réessayer.", "error")
@@ -49,6 +51,7 @@ def index():
     if not test_and_reconnect():
         return redirect(url_for('index'))  # Redirige vers la page d'accueil si la reconnexion échoue
     return render_template('index.html')  # Continue le processus si la connexion est réussie
+    return render_template('index.html')
 
 # Route pour ajouter un email via un formulaire
 @app.route('/add_email', methods=['POST'])
