@@ -3,6 +3,7 @@
 from flask import Flask, request, render_template, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 import os
+from sqlalchemy.exc import OperationalError
 import pymysql
 
 app = Flask(__name__)
@@ -25,6 +26,19 @@ class Email(db.Model):
 
     def __repr__(self):
         return f'<Email {self.address}>'
+
+
+@app.before_request
+def check_db_connection():
+    """Test de la connexion à la base de données avant chaque requête."""
+    try:
+        # Exécuter une requête simple pour tester la connexion à la base de données
+        db.session.execute('SELECT 1')  # Cela renvoie 1 si la connexion fonctionne
+    except OperationalError as e:
+        # En cas d'erreur, on ferme et réinitialise la session
+        db.session.remove()
+        db.engine.dispose()
+        flash(f"Erreur de connexion à la base de données : {e}. Veuillez réessayer.", "error")
 
 # Route pour la page d'accueil (index)
 @app.route('/')
