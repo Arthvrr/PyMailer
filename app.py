@@ -27,23 +27,28 @@ class Email(db.Model):
     def __repr__(self):
         return f'<Email {self.address}>'
 
-
-@app.before_request
-def check_db_connection():
-    """Test de la connexion à la base de données avant chaque requête."""
+def test_and_reconnect():
+    """Vérifie la connexion à la base de données et rétablit la connexion si nécessaire."""
     try:
-        # Exécuter une requête simple pour tester la connexion à la base de données
-        db.session.execute('SELECT 1')  # Cela renvoie 1 si la connexion fonctionne
+        db.session.execute('SELECT 1')
     except OperationalError as e:
-        # En cas d'erreur, on ferme et réinitialise la session
+        print("Erreur de connexion à la base de données. Tentative de reconnexion...")
         db.session.remove()
         db.engine.dispose()
-        flash(f"Erreur de connexion à la base de données : {e}. Veuillez réessayer.", "error")
+        try:
+            db.session.execute('SELECT 1')  # Nouvelle tentative de connexion
+            print("Connexion rétablie.")
+        except OperationalError as e2:
+            flash("Erreur de connexion à la base de données. Veuillez réessayer.", "error")
+            return False  # Si la reconnexion échoue, on retourne False pour signaler l'échec
+    return True
 
 # Route pour la page d'accueil (index)
 @app.route('/')
 def index():
-    return render_template('index.html')  # Rendre le fichier index.html
+    if not test_and_reconnect():
+        return redirect(url_for('index'))  # Redirige vers la page d'accueil si la reconnexion échoue
+    return render_template('index.html')  # Continue le processus si la connexion est réussie
 
 # Route pour ajouter un email via un formulaire
 @app.route('/add_email', methods=['POST'])
